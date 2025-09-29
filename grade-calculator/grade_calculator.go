@@ -1,5 +1,12 @@
 package esepunittests
 
+type GradingMode int // Grading mode type, will be used for pass/fail implementation
+
+const (
+	LetterGrade GradingMode = iota
+	PassFail
+)
+
 type GradeCalculator struct {
 	grades []Grade
 }
@@ -34,9 +41,17 @@ func NewGradeCalculator() *GradeCalculator {
 	}
 }
 
+// Function to return if grade reached pass/fail threshold (seventy percent)
+func GradeCalculatorPassFail() *GradeCalculator {
+	return &GradeCalculator{
+		grades: make([]Grade, 0),
+	}
+}
+
 func (gc *GradeCalculator) GetFinalGrade() string {
 	numericalGrade := gc.calculateNumericalGrade()
 
+	// Letter grade mode
 	if numericalGrade >= 90 {
 		return "A"
 	} else if numericalGrade >= 80 {
