@@ -1,6 +1,6 @@
 package esepunittests
 
-type GradingMode int // Grading mode type, will be used for pass/fail implementation
+type GradingMode int // Grading mode type, used in pass/fail implementation
 
 const (
 	LetterGrade GradingMode = iota
@@ -9,6 +9,7 @@ const (
 
 type GradeCalculator struct {
 	grades []Grade
+	mode GradingMode
 }
 
 type GradeType int
@@ -38,6 +39,7 @@ type Grade struct {
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
 		grades: make([]Grade, 0),
+		mode: LetterGrade, // Set mode to LetterGrade
 	}
 }
 
@@ -45,10 +47,12 @@ func NewGradeCalculator() *GradeCalculator {
 func GradeCalculatorPassFail() *GradeCalculator {
 	return &GradeCalculator{
 		grades: make([]Grade, 0),
+		mode: PassFail, // Set mode to PassFail
 	}
 }
 
-func (gc *GradeCalculator) GetFinalGrade() string {
+// Changed function name as it is only used to get the letter grade now
+func (gc *GradeCalculator) GetLetterGrade() string {
 	numericalGrade := gc.calculateNumericalGrade()
 
 	// Letter grade mode
@@ -63,6 +67,25 @@ func (gc *GradeCalculator) GetFinalGrade() string {
 	}
 
 	return "F"
+}
+
+// New function to get pass/fail grade
+func (gc *GradeCalculator) GetPassFailGrade() string {
+	numericalGrade := gc.calculateNumericalGrade()
+	if numericalGrade >= 70 { // Seventy percent is the pass threshold according to assignment instructions
+		return "Pass"
+	}
+	return "Fail"
+}
+
+// New GetFinalGrade function to determine which grading mode to return
+func (gc *GradeCalculator) GetFinalGrade() string {
+
+	if gc.mode == PassFail { // Return pass/fail  if in pass/fail mode
+		return gc.GetPassFailGrade()
+	}
+	 // By default return letter grade
+	return gc.GetLetterGrade()
 }
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) {
